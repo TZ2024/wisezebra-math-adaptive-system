@@ -24,7 +24,7 @@ async function downloadPrintable(packageType: 'single' | 'weekly') {
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = `wisezebra-practice-${packageType}.html`;
+  link.download = `wisezebra-practice-${packageType}.pdf`;
   link.click();
   URL.revokeObjectURL(url);
 }
