@@ -4,9 +4,9 @@ import { SectionCard } from '@/components/SectionCard';
 import { StatTile } from '@/components/StatTile';
 
 const cards = [
-  { href: '/admin/questions', title: 'Question bank', copy: 'Add, edit, filter, and approve tagged questions.' },
-  { href: '/admin/sessions', title: 'Student sessions', copy: 'View diagnostic sessions, answers, and profiles.' },
-  { href: '/admin/packets', title: 'Teacher packets', copy: 'Review generated packets and delivery status.' },
+  { href: '/admin/questions' as const, title: 'Question bank', copy: 'Add, edit, filter, and approve tagged questions.' },
+  { href: '/admin/sessions' as const, title: 'Student sessions', copy: 'View diagnostic sessions, answers, and profiles.' },
+  { href: '/admin/packets' as const, title: 'Teacher packets', copy: 'Review generated packets and delivery status.' },
 ];
 
 export default function AdminPage() {

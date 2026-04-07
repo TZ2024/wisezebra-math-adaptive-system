@@ -1,9 +1,15 @@
-import { supabaseAdmin } from '@/lib/supabase';
+import { getSupabaseAdmin } from '@/lib/supabase';
 import type { SessionProfile } from '@/types';
+
+function db() {
+  const client = getSupabaseAdmin();
+  if (!client) throw new Error('Supabase admin client is not configured.');
+  return client;
+}
 
 export async function createStudentSession(input: { studentName: string; parentEmail?: string | null }) {
   const sessionCode = `wz-${Date.now()}`;
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await db()
     .from('student_sessions')
     .insert({
       session_code: sessionCode,
@@ -20,7 +26,7 @@ export async function createStudentSession(input: { studentName: string; parentE
 }
 
 export async function saveSessionProfile(sessionId: string, profile: SessionProfile) {
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await db()
     .from('session_profiles')
     .insert({
       session_id: sessionId,
@@ -39,7 +45,7 @@ export async function saveSessionProfile(sessionId: string, profile: SessionProf
 }
 
 export async function createPracticeSet(input: { sessionId: string; profileId: string; packageType: 'single' | 'weekly'; questionIds: string[] }) {
-  const { data: setData, error: setError } = await supabaseAdmin
+  const { data: setData, error: setError } = await db()
     .from('practice_sets')
     .insert({
       session_id: input.sessionId,
@@ -63,14 +69,14 @@ export async function createPracticeSet(input: { sessionId: string; profileId: s
     })),
   );
 
-  const { error: itemError } = await supabaseAdmin.from('practice_items').insert(items);
+  const { error: itemError } = await db().from('practice_items').insert(items);
   if (itemError) throw itemError;
 
   return setData;
 }
 
 export async function createTeacherPacket(input: { sessionId: string; profileId: string; practiceSetId?: string | null; parentEmail?: string | null; packetBody: string }) {
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await db()
     .from('teacher_packets')
     .insert({
       session_id: input.sessionId,
