@@ -1,0 +1,14 @@
+<svg width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="160" cy="160" r="150" stroke="#8B1118" stroke-width="10"/>
+  <circle cx="160" cy="160" r="110" stroke="#8B1118" stroke-width="10"/>
+  <text x="160" y="58" text-anchor="middle" font-size="28" font-family="Georgia, serif" fill="#4B4B4F" font-weight="700">WISEZEBRA</text>
+  <text x="160" y="286" text-anchor="middle" font-size="24" font-family="Georgia, serif" fill="#4B4B4F" font-weight="700">MICHIGAN ACADEMY</text>
+  <path d="M138 96C165 85 188 95 200 118C210 137 208 156 196 176C188 188 185 205 190 223C174 210 163 204 151 198C129 187 117 170 114 147C111 126 119 106 138 96Z" fill="#4B4B4F"/>
+  <path d="M190 223C209 211 221 194 226 173C231 151 227 131 214 114C225 119 235 130 240 145C248 169 241 196 219 219C210 228 201 234 190 223Z" fill="#8B1118"/>
+  <path d="M169 228C177 228 182 234 184 243C176 250 168 254 159 257C152 253 148 248 146 241C150 232 159 228 169 228Z" fill="#1F4D8F"/>
+  <path d="M132 126L149 133M130 144L149 147M134 163L151 157M148 180L161 168M161 125L173 136M173 117L182 132M181 146L194 151M175 165L192 170" stroke="#000000" stroke-width="5" stroke-linecap="round" opacity="0.45"/>
+  <circle cx="152" cy="151" r="5" fill="#FFFFFF"/>
+  <circle cx="152" cy="151" r="2" fill="#000000"/>
+  <polygon points="112,160 92,170 98,150" fill="#8B1118"/>
+  <polygon points="228,160 248,170 242,150" fill="#8B1118"/>
+</svg>
