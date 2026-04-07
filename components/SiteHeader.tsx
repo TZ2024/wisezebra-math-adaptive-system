@@ -11,11 +11,7 @@ export function SiteHeader() {
         </div>
         <nav style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
           <Link href="/">Home</Link>
-          <Link href="/student/start">Student</Link>
-          <Link href="/student/results">Results</Link>
-          <Link href="/student/practice">Practice</Link>
-          <Link href="/teacher/report">Teacher</Link>
-          <Link href="/admin">Admin</Link>
+          <Link href="/student/start">Start Diagnostic</Link>
         </nav>
       </div>
     </header>

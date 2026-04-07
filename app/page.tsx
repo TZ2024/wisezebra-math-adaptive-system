@@ -23,16 +23,15 @@ export default function HomePage() {
               <span className="pill">$2.99 five-pack</span>
             </div>
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-              <Link className="button" href="/student/start">Open student flow</Link>
-              <Link className="button secondary" href="/teacher/report">Open teacher view</Link>
+              <Link className="button" href="/student/start">Start Diagnostic</Link>
             </div>
           </div>
           <div className="muted-panel">
             <h3 style={{ marginTop: 0 }}>What each audience sees</h3>
             <div className="grid">
-              <ProgressBar value={100} label="Student sees result + practice options" />
-              <ProgressBar value={100} label="Teacher gets internal report by email" />
-              <ProgressBar value={100} label="Admin manages bank, sessions, packets" />
+              <ProgressBar value={100} label="One continuous public journey" />
+              <ProgressBar value={100} label="Teacher report sent by email internally" />
+              <ProgressBar value={100} label="Admin stays hidden behind login" />
             </div>
             <div className="grid grid-2" style={{ marginTop: 16 }}>
               <StatTile label="Teacher inbox" value="wisezebrami@gmail.com" note="Internal report destination" />
@@ -56,20 +55,19 @@ export default function HomePage() {
               <li><strong>Practice Purchase</strong>: $0.99 for one set, $1.99 for five sets</li>
             </ul>
             <div style={{ marginTop: 16, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-              <Link className="button" href="/student/results">See result page</Link>
-              <Link className="button secondary" href="/student/practice">See practice offers</Link>
+              <Link className="button" href="/student/results">See result + purchase page</Link>
             </div>
           </SectionCard>
 
-          <SectionCard title="Internal and teacher pages">
+          <SectionCard title="Internal workflow">
             <ul className="list">
               <li><strong>Teacher Report</strong>: internal evaluation logic, confidence by domain, teaching notes</li>
               <li><strong>Teacher Email</strong>: sent to <strong>wisezebrami@gmail.com</strong></li>
-              <li><strong>Admin</strong>: question bank, sessions, profiles, packets, manual assignment</li>
+              <li><strong>Admin</strong>: hidden route, login required, internal only</li>
             </ul>
             <div style={{ marginTop: 16, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-              <Link className="button secondary" href="/teacher/report">See teacher report</Link>
-              <Link className="button secondary" href="/admin">See admin</Link>
+              <Link className="button secondary" href="/teacher/report">Internal teacher preview</Link>
+              <Link className="button secondary" href="/admin">Internal admin preview</Link>
             </div>
           </SectionCard>
         </div>

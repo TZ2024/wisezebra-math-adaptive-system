@@ -1,6 +1,8 @@
 import { SiteHeader } from '@/components/SiteHeader';
 import { SectionCard } from '@/components/SectionCard';
 
+// Internal/support route only. Public flow should purchase directly from the results page.
+
 const plans = [
   {
     name: 'Single Personalized Practice',

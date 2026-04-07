@@ -15,6 +15,10 @@ export default function AdminPage() {
     <main>
       <SiteHeader />
       <div className="container grid">
+        <div className="card" style={{ padding: 18 }}>
+          <div className="badge">Internal only</div>
+          <p className="helper" style={{ marginTop: 10 }}>Admin should be hidden behind login. This route is an internal preview and should not appear in public navigation.</p>
+        </div>
         <div className="grid grid-3">
           <StatTile label="Questions" value="6" note="Seeded sample records" />
           <StatTile label="Profiles" value="2" note="Demo student summaries" />

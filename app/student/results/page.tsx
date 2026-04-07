@@ -16,17 +16,18 @@ export default function ResultsPage() {
     <main>
       <SiteHeader />
       <div className="container grid">
-        <SectionCard title="Your math result" subtitle="Student-facing summary only.">
+        <SectionCard title="Your diagnostic result" subtitle="Your result and next step are all here in one place.">
           <div className="grid grid-2">
             <div>
               <div className="helper">Your current WiseZebra level</div>
               <div className="kpi">{profile.overallLevel}</div>
             </div>
             <div>
-              <div className="helper">Next step</div>
-              <div style={{ fontWeight: 700 }}>Practice at your level, plus a little review and challenge.</div>
+              <div className="helper">Recommended next step</div>
+              <div style={{ fontWeight: 700 }}>Continue with personalized practice at your level, with some review and challenge mixed in.</div>
             </div>
           </div>
+
           <div className="grid grid-3" style={{ marginTop: 16 }}>
             <div>
               <h3>Strengths</h3>
@@ -43,24 +44,33 @@ export default function ResultsPage() {
           </div>
         </SectionCard>
 
-        <SectionCard title="Personalized practice is ready" subtitle="A teacher version of this result is sent to WiseZebra internally.">
+        <SectionCard title="Choose your practice package" subtitle="No extra product switch, just continue from your result.">
           <div className="grid grid-2">
             <div className="card" style={{ padding: 20 }}>
-              <div className="badge">Best for trying it now</div>
+              <div className="badge">Quick start</div>
               <h3>1 personalized practice set</h3>
               <div className="kpi">$0.99</div>
-              <p className="helper">One custom set generated from this diagnostic result.</p>
+              <p className="helper">One targeted printable practice set based on this diagnostic.</p>
+              <button className="button" style={{ marginTop: 16 }}>Buy and generate PDF</button>
             </div>
             <div className="card" style={{ padding: 20 }}>
               <div className="badge">Best value</div>
-              <h3>5 practice sets</h3>
+              <h3>5 personalized practice sets</h3>
               <div className="kpi">$2.99</div>
-              <p className="helper">A full weekday week of personalized practice.</p>
+              <p className="helper">A one-week weekday pack of printable personalized practice.</p>
+              <button className="button" style={{ marginTop: 16 }}>Buy and generate PDFs</button>
             </div>
           </div>
-          <div style={{ marginTop: 16, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-            <Link className="button" href="/student/practice">Choose a practice option</Link>
-            <Link className="button secondary" href="/student/start">Try another demo session</Link>
+          <div className="card" style={{ padding: 20, marginTop: 16 }}>
+            <h3 style={{ marginTop: 0 }}>After purchase</h3>
+            <ul className="list">
+              <li>Generate printable PDF automatically</li>
+              <li>Download immediately</li>
+              <li>Teacher packet is sent to WiseZebra internally</li>
+            </ul>
+          </div>
+          <div style={{ marginTop: 16 }}>
+            <Link className="button secondary" href="/student/start">Start another diagnostic</Link>
           </div>
         </SectionCard>
       </div>
