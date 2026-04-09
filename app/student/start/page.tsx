@@ -51,7 +51,7 @@ export default function StudentStartPage() {
               <input className="input" placeholder="parent@example.com" value={parentEmail} onChange={(event) => setParentEmail(event.target.value)} />
             </div>
           </div>
-          <p className="helper">Students only see the clean student flow. Teacher and admin tools stay internal.</p>
+          <p className="helper">Start with the student name, then continue into the diagnostic.</p>
           {error ? <p style={{ color: 'var(--danger)', marginTop: 16 }}>{error}</p> : null}
           <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
             <button className="button" onClick={beginDiagnostic} disabled={submitting || !studentName.trim()}>

@@ -23,11 +23,43 @@ export type ImportPreviewResult = {
 
 const required = ['question_id', 'prompt', 'answer', 'teacher_explanation', 'wz_level', 'domain', 'skill'] as const;
 
+function splitCsvLine(line: string) {
+  const out: string[] = [];
+  let current = '';
+  let inQuotes = false;
+
+  for (let i = 0; i < line.length; i += 1) {
+    const char = line[i];
+    const next = line[i + 1];
+
+    if (char === '"') {
+      if (inQuotes && next === '"') {
+        current += '"';
+        i += 1;
+      } else {
+        inQuotes = !inQuotes;
+      }
+      continue;
+    }
+
+    if (char === ',' && !inQuotes) {
+      out.push(current.trim());
+      current = '';
+      continue;
+    }
+
+    current += char;
+  }
+
+  out.push(current.trim());
+  return out;
+}
+
 export function parseCsv(text: string): ImportedQuestionRow[] {
-  const lines = text.trim().split(/\r?\n/);
-  const headers = lines[0].split(',').map((h) => h.trim());
+  const lines = text.trim().split(/\r?\n/).filter(Boolean);
+  const headers = splitCsvLine(lines[0]).map((h) => h.trim());
   return lines.slice(1).map((line) => {
-    const values = line.split(',');
+    const values = splitCsvLine(line);
     return Object.fromEntries(headers.map((header, index) => [header, values[index]?.trim() ?? ''])) as ImportedQuestionRow;
   });
 }

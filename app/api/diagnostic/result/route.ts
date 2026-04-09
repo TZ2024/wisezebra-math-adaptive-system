@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSessionProfile, getStudentSession } from '@/lib/server/db';
+import { getFallbackResult } from '@/lib/server/fallback-store';
 
 export async function GET(request: Request) {
   try {
@@ -8,6 +9,11 @@ export async function GET(request: Request) {
 
     if (!sessionId) {
       return NextResponse.json({ ok: false, error: 'sessionId is required.' }, { status: 400 });
+    }
+
+    if (sessionId.startsWith('fallback-')) {
+      const result = getFallbackResult(sessionId);
+      return NextResponse.json({ ok: true, mode: 'fallback', ...result });
     }
 
     const [session, profile] = await Promise.all([
@@ -21,6 +27,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       ok: true,
+      mode: 'supabase',
       session: {
         id: session.id,
         sessionCode: session.session_code,
@@ -39,6 +46,6 @@ export async function GET(request: Request) {
     });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ ok: false, error: 'Failed to load diagnostic result.' }, { status: 500 });
+    return NextResponse.json({ ok: false, error: error instanceof Error ? error.message : 'Failed to load diagnostic result.' }, { status: 500 });
   }
 }
