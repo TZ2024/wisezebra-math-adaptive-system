@@ -2,27 +2,30 @@ import Link from 'next/link';
 import { SiteHeader } from '@/components/SiteHeader';
 import { SectionCard } from '@/components/SectionCard';
 import { StatTile } from '@/components/StatTile';
+import { getAdminStats } from '@/lib/server/admin';
 
 const cards = [
-  { href: '/admin/questions' as const, title: 'Question bank', copy: 'Add, edit, filter, and approve tagged questions.' },
+  { href: '/admin/questions' as const, title: 'Question bank', copy: 'Review imported and approved tagged questions.' },
   { href: '/admin/import' as const, title: 'Import questions', copy: 'Import externally tagged CSV or Excel question bank files.' },
-  { href: '/admin/sessions' as const, title: 'Student sessions', copy: 'View diagnostic sessions, answers, and profiles.' },
+  { href: '/admin/sessions' as const, title: 'Student sessions', copy: 'Review diagnostic sessions, results, and completion status.' },
   { href: '/admin/packets' as const, title: 'Teacher packets', copy: 'Review generated packets and delivery status.' },
 ];
 
-export default function AdminPage() {
+export default async function AdminPage() {
+  const stats = await getAdminStats();
+
   return (
     <main>
       <SiteHeader />
       <div className="container grid">
         <div className="card" style={{ padding: 18 }}>
           <div className="badge">Internal only</div>
-          <p className="helper" style={{ marginTop: 10 }}>Admin should be hidden behind login. This route is an internal preview and should not appear in public navigation.</p>
+          <p className="helper" style={{ marginTop: 10 }}>This area should stay out of the public student journey and remain behind admin login.</p>
         </div>
         <div className="grid grid-3">
-          <StatTile label="Questions" value="6" note="Seeded sample records" />
-          <StatTile label="Profiles" value="2" note="Demo student summaries" />
-          <StatTile label="Packet status" value="Queued" note="Teacher packet automation layer ready" />
+          <StatTile label="Questions" value={String(stats.questionCount)} note="Imported question records" />
+          <StatTile label="Completed sessions" value={String(stats.completedSessionCount)} note={`Out of ${stats.sessionCount} total sessions`} />
+          <StatTile label="Queued packets" value={String(stats.queuedPacketCount)} note={`Out of ${stats.packetCount} total packets`} />
         </div>
         <div className="grid grid-2">
           {cards.map((card) => (

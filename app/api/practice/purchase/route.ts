@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { sampleQuestions } from '@/lib/mock-data';
-import { createPracticeSet } from '@/lib/server/db';
+import { buildPracticeSetFromProfile } from '@/lib/server/db';
 
 export async function POST(request: Request) {
   try {
@@ -13,22 +12,24 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, error: 'sessionId and profileId are required' }, { status: 400 });
     }
 
-    const questionIds = sampleQuestions.map((question) => question.id);
-    const practiceSet = await createPracticeSet({
+    await buildPracticeSetFromProfile({
       sessionId,
       profileId,
       packageType,
-      questionIds,
     });
+
+    const amount = packageType === 'weekly' ? '2.99' : '0.99';
+    const successUrl = `/student/practice?sessionId=${encodeURIComponent(sessionId)}&profileId=${encodeURIComponent(profileId)}&packageType=${packageType}&paid=1`;
 
     return NextResponse.json({
       ok: true,
-      practiceSetId: practiceSet.id,
-      amount: packageType === 'weekly' ? 2.99 : 0.99,
       packageType,
+      amount,
+      checkoutUrl: successUrl,
+      checkoutMode: process.env.STRIPE_SECRET_KEY ? 'stripe_pending_wiring' : 'demo_success_redirect_until_stripe_keys_added',
     });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ ok: false, error: 'Failed to create practice set' }, { status: 500 });
+    return NextResponse.json({ ok: false, error: 'Failed to create checkout flow' }, { status: 500 });
   }
 }

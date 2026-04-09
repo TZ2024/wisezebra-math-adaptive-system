@@ -1,45 +1,71 @@
+'use client';
+
+import { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { SiteHeader } from '@/components/SiteHeader';
 import { SectionCard } from '@/components/SectionCard';
 
-// Internal/support route only. Public flow should purchase directly from the results page.
+function PracticeContent() {
+  const searchParams = useSearchParams();
+  const sessionId = searchParams.get('sessionId') || '';
+  const profileId = searchParams.get('profileId') || '';
+  const packageType = searchParams.get('packageType') === 'weekly' ? 'weekly' : 'single';
+  const paid = searchParams.get('paid') === '1';
 
-const plans = [
-  {
-    name: 'Single Personalized Practice',
-    price: '$0.99',
-    detail: '1 custom practice set generated from the diagnostic result',
-    features: ['Current level focus', 'Targeted review', 'Child-friendly format'],
-  },
-  {
-    name: '5 Practice Pack',
-    price: '$2.99',
-    detail: '5 custom weekday practice sets, ideal for one week',
-    features: ['Daily progression', 'Review + challenge mix', 'Better teacher follow-through'],
-  },
-];
+  async function downloadPdf() {
+    const response = await fetch('/api/pdf/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId, profileId, packageType, paid }),
+    });
+
+    if (!response.ok) {
+      const result = await response.json().catch(() => null);
+      alert(result?.error || 'Could not generate the PDF.');
+      return;
+    }
+
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `wisezebra-practice-${packageType}.pdf`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  return (
+    <div className="container grid">
+      <SectionCard
+        title={paid ? 'Payment received' : 'Checkout required'}
+        subtitle={paid ? 'Now generate the real PDF from the completed diagnostic and selected package.' : 'This page only unlocks after successful payment.'}
+      >
+        <div className="card" style={{ padding: 20 }}>
+          <div className="helper">Session</div>
+          <div style={{ fontWeight: 700 }}>{sessionId || 'Missing session'}</div>
+          <div className="helper" style={{ marginTop: 12 }}>Package</div>
+          <div style={{ fontWeight: 700 }}>{packageType === 'weekly' ? '5 personalized practice sets' : '1 personalized practice set'}</div>
+        </div>
+
+        {paid ? (
+          <div style={{ marginTop: 16 }}>
+            <button className="button" onClick={downloadPdf}>Generate PDF and Download</button>
+          </div>
+        ) : (
+          <p style={{ color: 'var(--danger)', marginTop: 16 }}>Payment is required before PDF generation and download.</p>
+        )}
+      </SectionCard>
+    </div>
+  );
+}
 
 export default function StudentPracticePage() {
   return (
     <main>
       <SiteHeader />
-      <div className="container grid">
-        <SectionCard title="Choose your practice plan" subtitle="Student-facing purchase options after the diagnostic.">
-          <div className="grid grid-2">
-            {plans.map((plan) => (
-              <div key={plan.name} className="card" style={{ padding: 20 }}>
-                <div className="badge">Practice Offer</div>
-                <h3>{plan.name}</h3>
-                <div className="kpi">{plan.price}</div>
-                <p className="helper">{plan.detail}</p>
-                <ul className="list">
-                  {plan.features.map((feature) => <li key={feature}>{feature}</li>)}
-                </ul>
-                <button className="button" style={{ marginTop: 16 }}>Select this plan</button>
-              </div>
-            ))}
-          </div>
-        </SectionCard>
-      </div>
+      <Suspense fallback={<div className="container"><SectionCard title="Loading purchase" subtitle="Preparing the payment result."><div /></SectionCard></div>}>
+        <PracticeContent />
+      </Suspense>
     </main>
   );
 }

@@ -1,25 +1,24 @@
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet, Svg, Circle, Path, Polygon } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Svg, Circle, Path } from '@react-pdf/renderer';
+import type { QuestionRecord } from '@/types';
 
 const styles = StyleSheet.create({
-  page: { paddingTop: 34, paddingBottom: 36, paddingHorizontal: 34, fontSize: 11, color: '#172033', fontFamily: 'Helvetica' },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 18 },
-  logoWrap: { width: 64, height: 64 },
+  page: { paddingTop: 30, paddingBottom: 34, paddingHorizontal: 32, fontSize: 11, color: '#172033', fontFamily: 'Helvetica' },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 },
+  logoWrap: { width: 58, height: 58 },
   brandWrap: { flex: 1, marginLeft: 12 },
   brandTitle: { fontSize: 18, fontWeight: 700 },
   brandSub: { fontSize: 10, color: '#5b6477', marginTop: 4 },
-  metaRight: { alignItems: 'flex-end' },
   levelPill: { border: '1 solid #8B1118', borderRadius: 14, paddingHorizontal: 10, paddingVertical: 4, fontSize: 10, color: '#8B1118', fontWeight: 700 },
-  section: { marginBottom: 16 },
+  section: { marginBottom: 14 },
   card: { border: '1 solid #dde3f0', borderRadius: 10, padding: 12, marginBottom: 12 },
   sectionTitle: { fontSize: 13, fontWeight: 700, marginBottom: 8 },
-  small: { fontSize: 10, color: '#5b6477' },
-  questionRow: { borderBottom: '1 solid #e8edf7', paddingBottom: 10, marginBottom: 10 },
+  small: { fontSize: 10, color: '#5b6477', lineHeight: 1.5 },
+  questionRow: { borderBottom: '1 solid #e8edf7', paddingBottom: 12, marginBottom: 12 },
+  questionMeta: { fontSize: 9, color: '#5b6477', marginBottom: 6 },
   questionText: { fontSize: 11, marginBottom: 14, lineHeight: 1.5 },
   answerLine: { borderBottom: '1 solid #9aa6bd', height: 18, marginTop: 8 },
-  coverTitle: { fontSize: 24, fontWeight: 700, marginBottom: 8 },
-  coverSub: { fontSize: 12, lineHeight: 1.6, color: '#4d5668' },
-  footer: { position: 'absolute', bottom: 18, left: 34, right: 34, fontSize: 9, color: '#7a8498', textAlign: 'center' },
+  footer: { position: 'absolute', bottom: 18, left: 32, right: 32, fontSize: 9, color: '#7a8498', textAlign: 'center' },
   answerItem: { marginBottom: 8, lineHeight: 1.45 },
 });
 
@@ -31,19 +30,16 @@ function LogoMark() {
       <Path d="M42 29C50 26 58 30 62 37C66 43 66 50 62 57C60 61 59 67 60 73C55 69 51 67 47 65C40 61 36 55 35 48C34 41 36 33 42 29Z" fill="#4B4B4F" />
       <Path d="M60 73C66 69 71 63 73 56C75 49 74 41 69 35C74 39 77 44 79 50C81 58 79 66 72 73C69 76 66 78 60 73Z" fill="#8B1118" />
       <Path d="M53 74C55 74 57 76 58 79C55 81 52 82 49 83C46 82 44 80 43 78C45 75 48 74 53 74Z" fill="#1F4D8F" />
-      <Path d="M40 39L46 41M39 45L46 46M40 51L47 49M46 57L51 53M50 39L54 43M54 37L57 42M57 46L62 48M55 53L61 55" stroke="#000000" strokeWidth="2" strokeLinecap="round" opacity="0.35" />
-      <Circle cx="47" cy="47" r="2" fill="#FFFFFF" />
-      <Circle cx="47" cy="47" r="1" fill="#000000" />
     </Svg>
   );
 }
 
-function makeQuestions(count: number, level: string) {
-  return Array.from({ length: count }).map((_, index) => ({
-    number: index + 1,
-    prompt: `Practice question ${index + 1} for ${level}: solve the problem and show your work if needed.`,
-    answer: `Sample answer ${index + 1}`,
-  }));
+function chunkQuestions(items: QuestionRecord[], size: number) {
+  const chunks: QuestionRecord[][] = [];
+  for (let index = 0; index < items.length; index += size) {
+    chunks.push(items.slice(index, index + size));
+  }
+  return chunks;
 }
 
 export function PracticePdfDocument(input: {
@@ -53,9 +49,9 @@ export function PracticePdfDocument(input: {
   strengths: string[];
   supportAreas: string[];
   recommendedNextPractice: string[];
+  questions: QuestionRecord[];
 }) {
-  const questionCount = input.packageType === 'weekly' ? 50 : 30;
-  const questions = makeQuestions(questionCount, input.wzLevel);
+  const studentPages = chunkQuestions(input.questions, 8);
 
   return (
     <Document>
@@ -63,23 +59,16 @@ export function PracticePdfDocument(input: {
         <View style={styles.header}>
           <LogoMark />
           <View style={styles.brandWrap}>
-            <Text style={styles.brandTitle}>WiseZebra Personalized Practice Pack</Text>
-            <Text style={styles.brandSub}>Student-ready printable math practice based on the diagnostic result.</Text>
+            <Text style={styles.brandTitle}>WiseZebra Personalized Practice</Text>
+            <Text style={styles.brandSub}>Real imported WZ-tagged questions selected from the completed diagnostic.</Text>
           </View>
-          <View style={styles.metaRight}>
-            <Text style={styles.levelPill}>{input.wzLevel}</Text>
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.coverTitle}>{input.studentName}</Text>
-          <Text style={styles.coverSub}>This packet is personalized for the student’s current WiseZebra level. Use it as clean daily practice with no extra internal scoring details shown.</Text>
+          <Text style={styles.levelPill}>{input.wzLevel}</Text>
         </View>
 
         <View style={styles.card}>
-          <Text style={styles.sectionTitle}>Practice overview</Text>
-          <Text style={styles.small}>Package: {input.packageType === 'weekly' ? '5 practice sets, one weekday week' : '1 personalized practice set'}</Text>
-          <Text style={styles.small}>Question count: {questionCount}</Text>
+          <Text style={styles.sectionTitle}>{input.studentName}</Text>
+          <Text style={styles.small}>Package: {input.packageType === 'weekly' ? '5 personalized practice sets' : '1 personalized practice set'}</Text>
+          <Text style={styles.small}>This student packet contains only the printable questions. Teacher notes and answers are kept separate.</Text>
         </View>
 
         <View style={styles.card}>
@@ -89,87 +78,65 @@ export function PracticePdfDocument(input: {
           ))}
         </View>
 
-        <Text style={styles.footer}>WiseZebra Michigan Academy • Personalized Practice Packet</Text>
+        <Text style={styles.footer}>WiseZebra • Student cover page</Text>
       </Page>
+
+      {studentPages.map((pageQuestions, pageIndex) => (
+        <Page key={`student-${pageIndex}`} size="A4" style={styles.page}>
+          <View style={styles.header}>
+            <LogoMark />
+            <View style={styles.brandWrap}>
+              <Text style={styles.brandTitle}>Student Practice</Text>
+              <Text style={styles.brandSub}>Page {pageIndex + 1} of {studentPages.length}</Text>
+            </View>
+            <Text style={styles.levelPill}>{input.wzLevel}</Text>
+          </View>
+
+          {pageQuestions.map((question, index) => (
+            <View key={question.id} style={styles.questionRow}>
+              <Text style={styles.questionMeta}>{pageIndex * 8 + index + 1}. {question.wzLevel} • {question.domain} • {question.skill}</Text>
+              <Text style={styles.questionText}>{question.prompt}</Text>
+              <View style={styles.answerLine} />
+              <View style={styles.answerLine} />
+            </View>
+          ))}
+
+          <Text style={styles.footer}>WiseZebra • Student practice page</Text>
+        </Page>
+      ))}
 
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
           <LogoMark />
           <View style={styles.brandWrap}>
-            <Text style={styles.brandTitle}>Practice Questions</Text>
-            <Text style={styles.brandSub}>Student name: {input.studentName}</Text>
+            <Text style={styles.brandTitle}>Teacher and Answer Pages</Text>
+            <Text style={styles.brandSub}>Separate from the student pages.</Text>
           </View>
-          <View style={styles.metaRight}>
-            <Text style={styles.levelPill}>{input.wzLevel}</Text>
-          </View>
-        </View>
-
-        {questions.slice(0, Math.ceil(questionCount / 2)).map((question) => (
-          <View key={question.number} style={styles.questionRow}>
-            <Text style={styles.questionText}>{question.number}. {question.prompt}</Text>
-            <View style={styles.answerLine} />
-          </View>
-        ))}
-
-        <Text style={styles.footer}>Student practice page 1</Text>
-      </Page>
-
-      <Page size="A4" style={styles.page}>
-        <View style={styles.header}>
-          <LogoMark />
-          <View style={styles.brandWrap}>
-            <Text style={styles.brandTitle}>Practice Questions</Text>
-            <Text style={styles.brandSub}>Continue working carefully and neatly.</Text>
-          </View>
-          <View style={styles.metaRight}>
-            <Text style={styles.levelPill}>{input.wzLevel}</Text>
-          </View>
-        </View>
-
-        {questions.slice(Math.ceil(questionCount / 2)).map((question) => (
-          <View key={question.number} style={styles.questionRow}>
-            <Text style={styles.questionText}>{question.number}. {question.prompt}</Text>
-            <View style={styles.answerLine} />
-          </View>
-        ))}
-
-        <Text style={styles.footer}>Student practice page 2</Text>
-      </Page>
-
-      <Page size="A4" style={styles.page}>
-        <View style={styles.header}>
-          <LogoMark />
-          <View style={styles.brandWrap}>
-            <Text style={styles.brandTitle}>Answer Key</Text>
-            <Text style={styles.brandSub}>Separate from the student practice pages.</Text>
-          </View>
-          <View style={styles.metaRight}>
-            <Text style={styles.levelPill}>{input.wzLevel}</Text>
-          </View>
+          <Text style={styles.levelPill}>{input.wzLevel}</Text>
         </View>
 
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>Strengths</Text>
-          {input.strengths.map((item) => (
-            <Text key={item} style={styles.answerItem}>• {item}</Text>
-          ))}
+          {input.strengths.map((item) => <Text key={item} style={styles.answerItem}>• {item}</Text>)}
         </View>
 
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>Support areas</Text>
-          {input.supportAreas.map((item) => (
-            <Text key={item} style={styles.answerItem}>• {item}</Text>
-          ))}
+          {input.supportAreas.map((item) => <Text key={item} style={styles.answerItem}>• {item}</Text>)}
         </View>
 
         <View style={styles.card}>
-          <Text style={styles.sectionTitle}>Answers</Text>
-          {questions.map((question) => (
-            <Text key={question.number} style={styles.answerItem}>{question.number}. {question.answer}</Text>
+          <Text style={styles.sectionTitle}>Answer key and teacher notes</Text>
+          {input.questions.map((question, index) => (
+            <View key={question.id} style={{ marginBottom: 10 }}>
+              <Text style={styles.answerItem}>{index + 1}. Answer: {question.answer}</Text>
+              <Text style={styles.small}>Teacher explanation: {question.teacherExplanation}</Text>
+              {question.hints?.length ? <Text style={styles.small}>Hints: {question.hints.join(' • ')}</Text> : null}
+            </View>
           ))}
         </View>
 
-        <Text style={styles.footer}>Answer key • for parent or teacher use</Text>
+        <Text style={styles.footer}>WiseZebra • Teacher / answer page</Text>
       </Page>
     </Document>
   );
